@@ -54,6 +54,7 @@ class _DsGalleryPageState extends State<DsGalleryPage> {
   Timer? _toastTimer;
 
   int _bottomBarIndex = 0;
+  bool _useCenterActionBottomBar = true;
 
   @override
   void dispose() {
@@ -129,6 +130,16 @@ class _DsGalleryPageState extends State<DsGalleryPage> {
               mode: _mode,
               onChanged: (m) => setState(() => _mode = m),
             ),
+          AppIconButton(
+            icon: _useCenterActionBottomBar
+                ? Icons.add_circle
+                : Icons.add_circle_outline,
+            semanticsLabel: 'Toggle center action bottom bar',
+            variant: AppButtonVariant.ghost,
+            onPressed: () => setState(
+              () => _useCenterActionBottomBar = !_useCenterActionBottomBar,
+            ),
+          ),
         ],
       ),
       drawer: AppDrawer(
@@ -143,11 +154,22 @@ class _DsGalleryPageState extends State<DsGalleryPage> {
           }
         },
       ),
-      bottomNavigationBar: AppBottomBar(
-        items: navItems,
-        selectedIndex: _bottomBarIndex,
-        onSelected: (i) => setState(() => _bottomBarIndex = i),
-      ),
+      bottomNavigationBar: _useCenterActionBottomBar
+          ? AppBottomBarWithCenterAction(
+              items: navItems,
+              selectedIndex: _bottomBarIndex,
+              onSelected: (i) => setState(() => _bottomBarIndex = i),
+              centerActionSemanticsLabel: 'Add transaction',
+              centerAction: FloatingActionButton(
+                onPressed: () => _showSnackBar(context, AppFeedbackTone.info),
+                child: const Icon(Icons.add),
+              ),
+            )
+          : AppBottomBar(
+              items: navItems,
+              selectedIndex: _bottomBarIndex,
+              onSelected: (i) => setState(() => _bottomBarIndex = i),
+            ),
       body: Column(
         children: [
           const DsGalleryThemeControls(),

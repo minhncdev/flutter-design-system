@@ -49,5 +49,16 @@ class NavigationTokens {
   /// Scale animation duration.
   static const Duration bottomBarSelectionAnimDuration = MotionDurations.fast;
 
+  // ===== BottomBar center action docking (for AppBottomBarWithCenterAction) =====
+
+  /// Default FAB size used for the center action.
+  static const double bottomBarCenterActionSize = SizeTokens.sz56;
+
+  /// Horizontal breathing room around the center action (also used to reserve the dock gap).
+  static const double bottomBarCenterActionDockPaddingX = SpacingTokens.s12;
+
+  /// Distance from the bottom edge of the bar content (above safe area) to the FAB bottom.
+  static const double bottomBarCenterActionBottomPadding = SpacingTokens.s8;
+
   const NavigationTokens._();
 }

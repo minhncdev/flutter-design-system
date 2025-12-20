@@ -185,6 +185,11 @@ class NavigationMetrics {
   final double bottomBarLabelPaddingBottom;
   final Duration bottomBarSelectionAnimDuration;
 
+  // ===== NEW: Center action docking =====
+  final double bottomBarCenterActionSize;
+  final double bottomBarCenterActionDockPaddingX;
+  final double bottomBarCenterActionBottomPadding;
+
   const NavigationMetrics({
     required this.appBarHeight,
     required this.bottomBarHeight,
@@ -199,6 +204,9 @@ class NavigationMetrics {
     required this.bottomBarLabelPaddingTop,
     required this.bottomBarLabelPaddingBottom,
     required this.bottomBarSelectionAnimDuration,
+    required this.bottomBarCenterActionSize,
+    required this.bottomBarCenterActionDockPaddingX,
+    required this.bottomBarCenterActionBottomPadding,
   });
 
   factory NavigationMetrics.fromTokens() {
@@ -220,6 +228,13 @@ class NavigationMetrics {
       bottomBarLabelPaddingBottom: NavigationTokens.bottomBarLabelPaddingBottom,
       bottomBarSelectionAnimDuration:
           NavigationTokens.bottomBarSelectionAnimDuration,
+
+      // NEW
+      bottomBarCenterActionSize: NavigationTokens.bottomBarCenterActionSize,
+      bottomBarCenterActionDockPaddingX:
+          NavigationTokens.bottomBarCenterActionDockPaddingX,
+      bottomBarCenterActionBottomPadding:
+          NavigationTokens.bottomBarCenterActionBottomPadding,
     );
   }
 }

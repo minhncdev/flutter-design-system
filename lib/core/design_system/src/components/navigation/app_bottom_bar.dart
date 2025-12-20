@@ -1,7 +1,7 @@
-/// DS Bottom Navigation Bar primitive (Material 3-friendly).
+/// DS Bottom Navigation Bar primitive (custom implementation).
 /// - No routing logic. Exposes selectedIndex + onSelected callback.
 /// - Token/theme-driven via DS extensions + ColorScheme/TextTheme.
-/// - Custom layout to support: no selected background, icon color+scale, tight paddings.
+/// - Custom Row layout with GestureDetector (no ink effects).
 library;
 
 import 'package:flutter/material.dart';
@@ -113,10 +113,9 @@ class _BottomBarItem extends StatelessWidget {
       selected: selected,
       enabled: enabled,
       label: item.semanticsLabel ?? item.label,
-      child: InkResponse(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
-        // No persistent selection background; Ink is only for touch feedback.
-        containedInkWell: true,
         child: Padding(
           padding: context.dsSpacing.symmetric(horizontal: nav.itemPaddingX),
           child: Center(
@@ -239,6 +238,7 @@ class _DefaultBadge extends StatelessWidget {
 
     final bool isDot = (count == null) || (count == 0 && showWhenZero);
 
+    // Size/padding driven by DS spacing/radii (no hard-coded radius/EdgeInsets).
     final radius = context.dsRadii.shape.full;
     final bg = scheme.errorContainer;
     final fg = scheme.onErrorContainer;

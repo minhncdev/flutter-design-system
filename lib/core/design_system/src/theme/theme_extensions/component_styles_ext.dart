@@ -177,6 +177,13 @@ class NavigationMetrics {
   final double itemGap;
   final double itemPaddingX;
 
+  // ===== NEW =====
+  final double bottomBarSelectedIconScale;
+  final double bottomBarUnselectedIconScale;
+  final double bottomBarIconPaddingY;
+  final double bottomBarLabelPaddingTop;
+  final Duration bottomBarSelectionAnimDuration;
+
   const NavigationMetrics({
     required this.appBarHeight,
     required this.bottomBarHeight,
@@ -185,6 +192,11 @@ class NavigationMetrics {
     required this.navIconSize,
     required this.itemGap,
     required this.itemPaddingX,
+    required this.bottomBarSelectedIconScale,
+    required this.bottomBarUnselectedIconScale,
+    required this.bottomBarIconPaddingY,
+    required this.bottomBarLabelPaddingTop,
+    required this.bottomBarSelectionAnimDuration,
   });
 
   factory NavigationMetrics.fromTokens() {
@@ -196,6 +208,15 @@ class NavigationMetrics {
       navIconSize: NavigationTokens.navIconSize,
       itemGap: NavigationTokens.itemGap,
       itemPaddingX: NavigationTokens.itemPaddingX,
+
+      // NEW
+      bottomBarSelectedIconScale: NavigationTokens.bottomBarSelectedIconScale,
+      bottomBarUnselectedIconScale:
+          NavigationTokens.bottomBarUnselectedIconScale,
+      bottomBarIconPaddingY: NavigationTokens.bottomBarIconPaddingY,
+      bottomBarLabelPaddingTop: NavigationTokens.bottomBarLabelPaddingTop,
+      bottomBarSelectionAnimDuration:
+          NavigationTokens.bottomBarSelectionAnimDuration,
     );
   }
 }

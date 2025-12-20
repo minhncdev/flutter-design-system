@@ -1,6 +1,7 @@
-/// DS Bottom Navigation Bar primitive (Material 3 NavigationBar).
+/// DS Bottom Navigation Bar primitive (Material 3-friendly).
 /// - No routing logic. Exposes selectedIndex + onSelected callback.
 /// - Token/theme-driven via DS extensions + ColorScheme/TextTheme.
+/// - Custom layout to support: no selected background, icon color+scale, tight paddings.
 library;
 
 import 'package:flutter/material.dart';
@@ -37,59 +38,118 @@ class AppBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final nav = context.dsComponents.navigation;
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
+    final int clampedIndex = selectedIndex.clamp(
+      0,
+      (items.isEmpty ? 0 : items.length - 1),
+    );
 
     return Semantics(
       container: true,
       label: semanticsLabel,
-      child: SizedBox(
-        height: nav.bottomBarHeight,
-        child: NavigationBar(
-          selectedIndex: selectedIndex.clamp(
-            0,
-            (items.isEmpty ? 0 : items.length - 1),
+      child: Material(
+        color: scheme.surface,
+        child: SizedBox(
+          height: nav.bottomBarHeight,
+          child: Row(
+            children: <Widget>[
+              for (int i = 0; i < items.length; i++)
+                Expanded(
+                  child: _BottomBarItem(
+                    item: items[i],
+                    index: i,
+                    selected: i == clampedIndex,
+                    showLabel: showLabels,
+                    onTap: items[i].enabled ? () => onSelected(i) : null,
+                  ),
+                ),
+            ],
           ),
-          onDestinationSelected: (index) {
-            if (index < 0 || index >= items.length) return;
-            if (!items[index].enabled) return;
-            onSelected(index);
-          },
-          labelBehavior: showLabels
-              ? NavigationDestinationLabelBehavior.alwaysShow
-              : NavigationDestinationLabelBehavior.alwaysHide,
-          destinations: [
-            for (int i = 0; i < items.length; i++)
-              _destinationFor(context, items[i], selected: i == selectedIndex),
-          ],
         ),
       ),
     );
   }
+}
 
-  NavigationDestination _destinationFor(
-    BuildContext context,
-    AppNavigationItem item, {
-    required bool selected,
-  }) {
+@immutable
+class _BottomBarItem extends StatelessWidget {
+  final AppNavigationItem item;
+  final int index;
+  final bool selected;
+  final bool showLabel;
+  final VoidCallback? onTap;
+
+  const _BottomBarItem({
+    required this.item,
+    required this.index,
+    required this.selected,
+    required this.showLabel,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final nav = context.dsComponents.navigation;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
-    return NavigationDestination(
-      enabled: item.enabled,
-      label: item.label,
-      icon: _NavIconWithBadge(
-        icon: item.iconForSelected(false),
-        badge: item.badge,
-        badgeCount: item.badgeCount,
-        showBadgeWhenZero: item.showBadgeWhenZero,
-        iconSize: nav.navIconSize,
-        semanticsLabel: item.semanticsLabel ?? item.label,
-      ),
-      selectedIcon: _NavIconWithBadge(
-        icon: item.iconForSelected(true),
-        badge: item.badge,
-        badgeCount: item.badgeCount,
-        showBadgeWhenZero: item.showBadgeWhenZero,
-        iconSize: nav.navIconSize,
-        semanticsLabel: item.semanticsLabel ?? item.label,
+    final bool enabled = onTap != null;
+
+    final Color fg = !enabled
+        ? theme.disabledColor
+        : (selected ? scheme.primary : scheme.onSurfaceVariant);
+
+    final double scale = selected
+        ? nav.bottomBarSelectedIconScale
+        : nav.bottomBarUnselectedIconScale;
+
+    final IconData resolvedIcon = item.iconForSelected(selected);
+
+    return Semantics(
+      button: true,
+      selected: selected,
+      enabled: enabled,
+      label: item.semanticsLabel ?? item.label,
+      child: InkResponse(
+        onTap: onTap,
+        // No persistent selection background; Ink is only for touch feedback.
+        containedInkWell: true,
+        child: Padding(
+          padding: context.dsSpacing.symmetric(horizontal: nav.itemPaddingX),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                _NavIconWithBadge(
+                  icon: resolvedIcon,
+                  iconSize: nav.navIconSize,
+                  color: fg,
+                  scale: scale,
+                  scaleAnimDuration: nav.bottomBarSelectionAnimDuration,
+                  iconPaddingY: nav.bottomBarIconPaddingY,
+                  badge: item.badge,
+                  badgeCount: item.badgeCount,
+                  showBadgeWhenZero: item.showBadgeWhenZero,
+                ),
+                if (showLabel)
+                  Padding(
+                    padding: context.dsSpacing.only(
+                      top: nav.bottomBarLabelPaddingTop,
+                    ),
+                    child: Text(
+                      item.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.labelSmall?.copyWith(color: fg),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -99,20 +159,26 @@ class AppBottomBar extends StatelessWidget {
 class _NavIconWithBadge extends StatelessWidget {
   final IconData icon;
   final double iconSize;
+  final Color color;
+
+  final double scale;
+  final Duration scaleAnimDuration;
+  final double iconPaddingY;
 
   final Widget? badge;
   final int? badgeCount;
   final bool showBadgeWhenZero;
 
-  final String semanticsLabel;
-
   const _NavIconWithBadge({
     required this.icon,
     required this.iconSize,
+    required this.color,
+    required this.scale,
+    required this.scaleAnimDuration,
+    required this.iconPaddingY,
     required this.badge,
     required this.badgeCount,
     required this.showBadgeWhenZero,
-    required this.semanticsLabel,
   });
 
   bool get _hasBadge {
@@ -124,16 +190,19 @@ class _NavIconWithBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final Widget iconWidget = Padding(
+      padding: context.dsSpacing.only(top: iconPaddingY, bottom: iconPaddingY),
+      child: AnimatedScale(
+        scale: scale,
+        duration: scaleAnimDuration,
+        curve: Curves.easeOut,
+        child: Icon(icon, size: iconSize, color: color),
+      ),
+    );
 
-    final Widget iconWidget = Icon(icon, size: iconSize);
+    if (!_hasBadge) return ExcludeSemantics(child: iconWidget);
 
-    if (!_hasBadge) {
-      return Semantics(label: semanticsLabel, child: iconWidget);
-    }
-
-    return Semantics(
-      label: semanticsLabel,
+    return ExcludeSemantics(
       child: Stack(
         clipBehavior: Clip.none,
         children: <Widget>[
@@ -170,7 +239,6 @@ class _DefaultBadge extends StatelessWidget {
 
     final bool isDot = (count == null) || (count == 0 && showWhenZero);
 
-    // Size/padding driven by DS spacing/radii (no hard-coded radius/EdgeInsets).
     final radius = context.dsRadii.shape.full;
     final bg = scheme.errorContainer;
     final fg = scheme.onErrorContainer;

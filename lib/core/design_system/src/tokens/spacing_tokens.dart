@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 @immutable
 class SpacingTokens {
   static const double s0 = 0;
+  static const double s1 = 1; // NEW: hairline spacing (1dp)
   static const double s2 = 2;
   static const double s4 = 4;
   static const double s6 = 6;

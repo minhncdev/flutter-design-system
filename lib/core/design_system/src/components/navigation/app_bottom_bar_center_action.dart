@@ -141,13 +141,26 @@ class AppBottomBarCenterAction extends StatelessWidget {
                         child: Center(
                           child: SizedBox.square(
                             dimension: innerSize,
-                            child: centerActionSemanticsLabel == null
-                                ? centerAction
-                                : Semantics(
-                                    button: true,
-                                    label: centerActionSemanticsLabel,
-                                    child: centerAction,
-                                  ),
+                            child: Builder(
+                              builder: (context) {
+                                final Widget action =
+                                    centerActionSemanticsLabel == null
+                                    ? centerAction
+                                    : Semantics(
+                                        button: true,
+                                        label: centerActionSemanticsLabel,
+                                        child: centerAction,
+                                      );
+
+                                // Avoid clipping FAB shadow; enforce circular for non-FAB widgets.
+                                final Widget circularAction =
+                                    centerAction is FloatingActionButton
+                                    ? action
+                                    : ClipOval(child: action);
+
+                                return Center(child: circularAction);
+                              },
+                            ),
                           ),
                         ),
                       ),

@@ -198,8 +198,9 @@ abstract final class AppSemanticMappingProfiles {
   static const AppSemanticMappingProfile material3 =
       AppSemanticMappingProfile();
 
-  /// Fintech: keep dark brand at 400, but use 500 in light to match your extracted
-  /// HTML "hero" colors (green/warning/danger are at 500 in those scales).
+  /// Fintech mapping:
+  /// - Dark primary in HTML is #13EC5B => use 500 (not 400).
+  /// - Dark muted text in HTML is #92C9A4 => use neutral 400 for secondary/tertiary.
   static const AppSemanticMappingProfile fintech = AppSemanticMappingProfile(
     lightBrand: AppBrandShadeMapping(
       primary: 500,
@@ -209,6 +210,37 @@ abstract final class AppSemanticMappingProfiles {
       warning: 500,
       danger: 500,
       info: 600,
+    ),
+
+    // ✅ Fix: match dark HTML colors
+    darkBrand: AppBrandShadeMapping(
+      primary: 500, // #13EC5B
+      secondary: 400,
+      accent: 400,
+      success: 500, // keep same as primary in your fintech brand
+      warning: 500, // #FFA235 in amberFinanceScale
+      danger: 500, // #FF5252
+      info: 400,
+    ),
+
+    // ✅ Fix: muted text = #92C9A4 (neutral 400)
+    darkNeutral: AppNeutralShadeMapping(
+      background: 950,
+      surface: 900,
+      surfaceSubtle: 900,
+      surfaceElevated: 800,
+
+      textPrimary: 50,
+      textSecondary: 400, // #92C9A4
+      textTertiary: 400, // #92C9A4
+      iconPrimary: 100,
+      iconSecondary: 400, // #92C9A4
+
+      border: 700,
+      divider: 700,
+      disabled: 800,
+      onDisabled: 500,
+      scrim: 950,
     ),
   );
 }

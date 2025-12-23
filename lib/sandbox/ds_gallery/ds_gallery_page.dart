@@ -15,6 +15,7 @@ import '../../core/design_system/design_system.dart';
 import '../../app/theme/theme_controller.dart';
 import '../../app/theme/theme_controller_scope.dart';
 import '../../app/theme/theme_selection_config.dart';
+import '../../app/config/brand_defaults.dart';
 
 @immutable
 class DsGalleryPage extends StatefulWidget {
@@ -787,31 +788,20 @@ class DsGalleryThemeControls extends StatelessWidget {
 
         final ThemeSelectionType selectionType = switch (config) {
           SystemBasedThemeConfig _ => ThemeSelectionType.systemBased,
-          BrandBasedThemeConfig _ => ThemeSelectionType.brandBased,
+          PresetBasedThemeConfig _ => ThemeSelectionType.brandBased,
           _ => ThemeSelectionType.systemBased,
         };
 
-        final ThemeMode currentMode = switch (config) {
-          SystemBasedThemeConfig c => c.mode,
-          BrandBasedThemeConfig c => c.mode,
-          _ => ThemeMode.system,
-        };
+        final ThemeMode currentMode = config is SystemBasedThemeConfig
+            ? config.mode
+            : state.themeMode;
 
-        // Effective selected preset IDs (for highlighting)
-        String? selectedLightPresetId;
-        String? selectedDarkPresetId;
-        String? selectedBrandPresetId;
-
-        if (config is SystemBasedThemeConfig) {
-          // In SystemBased, highlight override if exists; otherwise highlight current default resolved by resolver.
-          // We can't read app/config mapping from here safely, so we highlight:
-          // - override value if set
-          // - else null (meaning "Default")
-          selectedLightPresetId = config.lightOverridePresetId;
-          selectedDarkPresetId = config.darkOverridePresetId;
-        } else if (config is BrandBasedThemeConfig) {
-          selectedBrandPresetId = config.brandPresetId;
-        }
+        final String? selectedPresetId = config is PresetBasedThemeConfig
+            ? config.presetId
+            : null;
+        final String? selectedBrandId = config is SystemBasedThemeConfig
+            ? config.brandId
+            : null;
 
         return Card(
           margin: const EdgeInsets.fromLTRB(12, 12, 12, 8),
@@ -826,7 +816,7 @@ class DsGalleryThemeControls extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
 
-                // Selection type: System vs Brand (mutual exclusion)
+                // Selection type: System vs Presets
                 SegmentedButton<ThemeSelectionType>(
                   segments: const [
                     ButtonSegment(
@@ -847,74 +837,56 @@ class DsGalleryThemeControls extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                // ThemeMode selector (works for both modes)
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    const Text('Mode:'),
-                    SegmentedButton<ThemeMode>(
-                      segments: const [
-                        ButtonSegment(
-                          value: ThemeMode.system,
-                          label: Text('System'),
-                        ),
-                        ButtonSegment(
-                          value: ThemeMode.light,
-                          label: Text('Light'),
-                        ),
-                        ButtonSegment(
-                          value: ThemeMode.dark,
-                          label: Text('Dark'),
-                        ),
-                      ],
-                      selected: {currentMode},
-                      onSelectionChanged: (set) {
-                        final v = set.first;
-                        // Only SystemBased supports setThemeMode in our controller.
-                        // For BrandBased, mode is still stored, but controller currently changes
-                        // mode via setThemeMode() only (systemBased).
-                        // So we handle both:
-                        if (config is SystemBasedThemeConfig) {
-                          controller.setThemeMode(v);
-                        } else if (config is BrandBasedThemeConfig) {
-                          // If your controller doesn't support brand mode changes, keep system.
-                          // Option A: ignore
-                          // Option B: you can add controller.setBrandMode(v) later.
-                        }
-                      },
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-
                 if (selectionType == ThemeSelectionType.systemBased) ...[
-                  _PresetPickerSection(
-                    title: 'Light tone (override)',
-                    presets: presets,
-                    selectedPresetId: selectedLightPresetId,
-                    onSelect: (id) => controller.setLightOverridePreset(id),
-                    onReset: () => controller.setLightOverridePreset(null),
+                  // System mode: allow ThemeMode + Brand selection
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      const Text('Mode:'),
+                      SegmentedButton<ThemeMode>(
+                        segments: const [
+                          ButtonSegment(
+                            value: ThemeMode.system,
+                            label: Text('System'),
+                          ),
+                          ButtonSegment(
+                            value: ThemeMode.light,
+                            label: Text('Light'),
+                          ),
+                          ButtonSegment(
+                            value: ThemeMode.dark,
+                            label: Text('Dark'),
+                          ),
+                        ],
+                        selected: {currentMode},
+                        onSelectionChanged: (set) {
+                          controller.setThemeMode(set.first);
+                        },
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  _PresetPickerSection(
-                    title: 'Dark tone (override)',
-                    presets: presets,
-                    selectedPresetId: selectedDarkPresetId,
-                    onSelect: (id) => controller.setDarkOverridePreset(id),
-                    onReset: () => controller.setDarkOverridePreset(null),
+                  const SizedBox(height: 12),
+                  _BrandPickerSection(
+                    title: 'Brand color (System mode only)',
+                    selectedBrandId: selectedBrandId,
+                    onSelect: (id) => controller.setBrandColor(id),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Default palette (light/dark) is controlled by ThemeDefaults.',
+                    style: TextStyle(fontSize: 12),
                   ),
                 ] else ...[
+                  // Preset mode: choose preset, tone is fixed by preset.toneBrightness
                   _PresetPickerSection(
-                    title: 'Preset (applies to both light/dark)',
+                    title: 'Preset (fixed tone)',
                     presets: presets,
-                    selectedPresetId: selectedBrandPresetId,
+                    selectedPresetId: selectedPresetId,
                     onSelect: (id) {
-                      if (id != null) controller.setBrandPreset(id);
+                      if (id != null) controller.setPalettePreset(id);
                     },
-                    onReset: null,
                   ),
                 ],
               ],
@@ -931,14 +903,12 @@ class _PresetPickerSection extends StatelessWidget {
   final List<PalettePreset> presets;
   final String? selectedPresetId;
   final ValueChanged<String?> onSelect;
-  final VoidCallback? onReset;
 
   const _PresetPickerSection({
     required this.title,
     required this.presets,
     required this.selectedPresetId,
     required this.onSelect,
-    required this.onReset,
   });
 
   @override
@@ -946,40 +916,73 @@ class _PresetPickerSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            if (onReset != null)
-              TextButton(
-                onPressed: onReset,
-                child: const Text('Reset default'),
-              ),
-          ],
+        Text(
+          title,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 6),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            if (onReset != null)
-              ChoiceChip(
-                label: const Text('Default'),
-                selected: selectedPresetId == null,
-                onSelected: (_) => onSelect(null),
-              ),
             for (final p in presets)
               ChoiceChip(
                 label: Text(p.displayName),
                 selected: selectedPresetId == p.id,
                 onSelected: (_) => onSelect(p.id),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _BrandPickerSection extends StatelessWidget {
+  final String title;
+  final String? selectedBrandId;
+  final ValueChanged<String> onSelect;
+
+  const _BrandPickerSection({
+    required this.title,
+    required this.selectedBrandId,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final options = BrandDefaults.options;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final o in options)
+              ChoiceChip(
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: o.previewColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(o.displayName),
+                  ],
+                ),
+                selected: selectedBrandId == o.id,
+                onSelected: (_) => onSelect(o.id),
               ),
           ],
         ),

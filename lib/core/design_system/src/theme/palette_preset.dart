@@ -7,7 +7,7 @@
 library;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show Color;
+import 'package:flutter/material.dart' show Color, Brightness;
 
 import '../foundations/app_colors.dart';
 import '../tokens/color_palette.dart';
@@ -26,6 +26,11 @@ class PalettePreset {
   /// Brand/accent selection (primary/secondary/etc).
   final BrandColorSelection brand;
 
+  /// Preset chỉ có 1 tone duy nhất (light OR dark).
+  /// Dùng để:
+  /// - preset mode: ép ThemeMode theo tone này, không phụ thuộc system brightness.
+  final Brightness toneBrightness;
+
   /// Small preview swatch (UI).
   final Color previewColor;
 
@@ -37,6 +42,7 @@ class PalettePreset {
     required this.displayName,
     required this.palettes,
     required this.brand,
+    required this.toneBrightness,
     required this.previewColor,
     this.description,
   });

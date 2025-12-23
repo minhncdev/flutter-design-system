@@ -19,6 +19,7 @@ class SemiDarkPreset {
     displayName: 'Semi Dark',
     palettes: PrimitivePalettes.semiDark,
     brand: BrandColorSelection.base,
+    toneBrightness: Brightness.dark,
     previewColor: Color(0xFF111827),
     description: 'Softer dark background than full Dark.',
   );

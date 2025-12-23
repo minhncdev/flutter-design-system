@@ -19,6 +19,7 @@ class DarkPreset {
     displayName: 'Dark',
     palettes: PrimitivePalettes.dark,
     brand: BrandColorSelection.base,
+    toneBrightness: Brightness.dark,
     previewColor: Color(0xFF0B1220),
     description: 'Darker neutral for dark mode.',
   );

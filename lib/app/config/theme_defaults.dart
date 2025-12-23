@@ -1,30 +1,39 @@
 // app/config/theme_defaults.dart
 //
-// App-owned mapping layer (Slot -> PresetId).
-// ✅ Đây là nơi bạn đổi "white" -> "milkWhite" để đổi default tone nhanh nhất.
+// App-owned mapping layer (Brightness -> PresetId).
+// ✅ Đây là nơi bạn đổi default preset nhanh nhất (light/dark).
 
 library;
 
-import '../../core/design_system/design_system.dart';
+import 'package:flutter/material.dart' show Brightness;
 
 class ThemeDefaults {
   const ThemeDefaults._();
 
-  /// Slot -> PresetId mapping (SINGLE SOURCE OF TRUTH for defaults).
-  static const Map<ToneSlot, String> slotMapping = <ToneSlot, String>{
-    ToneSlot.defaultLight: 'dark', // 👈 đổi thành 'milkWhite' là đổi tone Light
-    ToneSlot.defaultDark: 'dark', // 👈 đổi thành 'semiDark' nếu muốn
-  };
+  /// Default preset IDs (mutable để bạn đổi nhanh).
+  /// - SystemBased mode sẽ luôn lấy theo 2 biến này.
+  static String defaultLightPresetId = 'white';
+  static String defaultDarkPresetId = 'dark';
 
+  /// Fallback nếu presetId không được register trong registry.
   static const String fallbackLightPresetId = 'white';
   static const String fallbackDarkPresetId = 'dark';
 
-  static String presetIdForSlot(ToneSlot slot) {
-    final mapped = slotMapping[slot];
-    if (mapped != null) return mapped;
+  static String presetIdForBrightness(Brightness brightness) {
+    return brightness == Brightness.light
+        ? defaultLightPresetId
+        : defaultDarkPresetId;
+  }
 
-    return slot == ToneSlot.defaultLight
-        ? fallbackLightPresetId
-        : fallbackDarkPresetId;
+  /// Helper để đổi default nhanh theo code/runtime (xong gọi controller.rebuildFromDefaults()).
+  static void setDefaultPresetIdForBrightness(
+    Brightness brightness,
+    String presetId,
+  ) {
+    if (brightness == Brightness.light) {
+      defaultLightPresetId = presetId;
+    } else {
+      defaultDarkPresetId = presetId;
+    }
   }
 }

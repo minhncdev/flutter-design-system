@@ -19,6 +19,7 @@ class MilkWhitePreset {
     displayName: 'Trắng sữa',
     palettes: PrimitivePalettes.milkWhite,
     brand: BrandColorSelection.base,
+    toneBrightness: Brightness.light,
     previewColor: Color(0xFFFFFDF7),
     description: 'Warm neutral surfaces (less cold than pure white).',
   );

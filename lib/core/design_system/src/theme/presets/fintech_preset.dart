@@ -19,6 +19,7 @@ final class FintechPreset {
     displayName: 'Fintech',
     palettes: PrimitivePalettes.fintech,
     brand: BrandColorSelection.fintechGreen,
+    toneBrightness: Brightness.dark,
     previewColor: Color(0xFF13EC5B),
     description: 'From HTML mocks (overview/history/plan/debt).',
   );

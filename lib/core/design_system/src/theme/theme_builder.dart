@@ -89,13 +89,14 @@ class AppThemeBuilder {
   /// Build a full light/dark ThemeBundle from a palette preset.
   static ThemeBundle buildFromPreset({
     required PalettePreset preset,
+    BrandColorSelection? brandOverride,
     AppThemeConfig? baseConfig,
   }) {
     final cfg = baseConfig ?? AppThemeConfig.base();
 
     final merged = AppThemeConfig(
       palettes: preset.palettes,
-      brand: preset.brand,
+      brand: brandOverride ?? preset.brand,
       typography: cfg.typography,
       spacing: cfg.spacing,
       shape: cfg.shape,
@@ -110,13 +111,14 @@ class AppThemeBuilder {
   static ThemeData buildForPreset({
     required PalettePreset preset,
     required Brightness brightness,
+    BrandColorSelection? brandOverride,
     AppThemeConfig? baseConfig,
   }) {
     final cfg = baseConfig ?? AppThemeConfig.base();
 
     final merged = AppThemeConfig(
       palettes: preset.palettes,
-      brand: preset.brand,
+      brand: brandOverride ?? preset.brand,
       typography: cfg.typography,
       spacing: cfg.spacing,
       shape: cfg.shape,

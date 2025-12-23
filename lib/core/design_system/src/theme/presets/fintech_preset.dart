@@ -20,6 +20,7 @@ final class FintechPreset {
     palettes: PrimitivePalettes.fintech,
     brand: BrandColorSelection.fintechGreen,
     toneBrightness: Brightness.dark,
+    mappingProfile: AppSemanticMappingProfiles.fintech,
     description: 'From HTML mocks (overview/history/plan/debt).',
   );
 }

@@ -9,6 +9,7 @@ import 'dart:ui' show Color;
 import 'package:flutter/foundation.dart';
 
 import '../tokens/color_palette.dart';
+import 'semantic_mapping_profile.dart';
 
 @immutable
 class BrandColorSelection {
@@ -184,62 +185,67 @@ class AppColors {
   factory AppColors.light({
     required PrimitivePalettes palettes,
     required BrandColorSelection brand,
+    AppSemanticMappingProfile mappingProfile =
+        AppSemanticMappingProfiles.material3,
   }) {
     final n = palettes.neutral;
+    final nn = mappingProfile.lightNeutral;
+    final br = mappingProfile.lightBrand;
+    final bc = mappingProfile.lightContainers;
 
     return AppColors(
-      background: n[0],
-      surface: n[0],
-      surfaceSubtle: n[50],
-      surfaceElevated: n[0],
+      background: n[nn.background],
+      surface: n[nn.surface],
+      surfaceSubtle: n[nn.surfaceSubtle],
+      surfaceElevated: n[nn.surfaceElevated],
 
-      textPrimary: n[900],
-      textSecondary: n[700],
-      textTertiary: n[500],
-      iconPrimary: n[800],
-      iconSecondary: n[600],
+      textPrimary: n[nn.textPrimary],
+      textSecondary: n[nn.textSecondary],
+      textTertiary: n[nn.textTertiary],
+      iconPrimary: n[nn.iconPrimary],
+      iconSecondary: n[nn.iconSecondary],
 
-      border: n[200],
-      divider: n[200],
+      border: n[nn.border],
+      divider: n[nn.divider],
 
-      primary: brand.primary[600],
-      onPrimary: n[0],
-      primaryContainer: brand.primary[100],
+      primary: brand.primary[br.primary],
+      onPrimary: n[nn.surface],
+      primaryContainer: brand.primary[bc.primaryContainer],
       onPrimaryContainer: brand.primary[900],
 
-      secondary: brand.secondary[600],
-      onSecondary: n[0],
-      secondaryContainer: brand.secondary[100],
+      secondary: brand.secondary[br.secondary],
+      onSecondary: n[nn.surface],
+      secondaryContainer: brand.secondary[bc.secondaryContainer],
       onSecondaryContainer: brand.secondary[900],
 
-      accent: brand.accent[600],
-      onAccent: n[0],
+      accent: brand.accent[br.accent],
+      onAccent: n[nn.surface],
 
-      success: brand.success[600],
-      onSuccess: n[0],
-      successContainer: brand.success[100],
+      success: brand.success[br.success],
+      onSuccess: n[nn.surface],
+      successContainer: brand.success[bc.successContainer],
       onSuccessContainer: brand.success[900],
 
-      warning: brand.warning[600],
-      onWarning: n[950],
-      warningContainer: brand.warning[100],
+      warning: brand.warning[br.warning],
+      onWarning: n[nn.scrim],
+      warningContainer: brand.warning[bc.warningContainer],
       onWarningContainer: brand.warning[900],
 
-      danger: brand.danger[600],
-      onDanger: n[0],
-      dangerContainer: brand.danger[100],
+      danger: brand.danger[br.danger],
+      onDanger: n[nn.surface],
+      dangerContainer: brand.danger[bc.dangerContainer],
       onDangerContainer: brand.danger[900],
 
-      info: brand.info[600],
-      onInfo: n[0],
-      infoContainer: brand.info[100],
+      info: brand.info[br.info],
+      onInfo: n[nn.surface],
+      infoContainer: brand.info[bc.infoContainer],
       onInfoContainer: brand.info[900],
 
-      focusRing: brand.primary[600],
-      disabled: n[200],
-      onDisabled: n[500],
+      focusRing: brand.primary[br.primary],
+      disabled: n[nn.disabled],
+      onDisabled: n[nn.onDisabled],
 
-      scrim: n[950],
+      scrim: n[nn.scrim],
     );
   }
 
@@ -247,62 +253,67 @@ class AppColors {
   factory AppColors.dark({
     required PrimitivePalettes palettes,
     required BrandColorSelection brand,
+    AppSemanticMappingProfile mappingProfile =
+        AppSemanticMappingProfiles.material3,
   }) {
     final n = palettes.neutral;
+    final nn = mappingProfile.darkNeutral;
+    final br = mappingProfile.darkBrand;
+    final bc = mappingProfile.darkContainers;
 
     return AppColors(
-      background: n[950],
-      surface: n[900],
-      surfaceSubtle: n[900],
-      surfaceElevated: n[800],
+      background: n[nn.background],
+      surface: n[nn.surface],
+      surfaceSubtle: n[nn.surfaceSubtle],
+      surfaceElevated: n[nn.surfaceElevated],
 
-      textPrimary: n[50],
-      textSecondary: n[200],
-      textTertiary: n[400],
-      iconPrimary: n[100],
-      iconSecondary: n[300],
+      textPrimary: n[nn.textPrimary],
+      textSecondary: n[nn.textSecondary],
+      textTertiary: n[nn.textTertiary],
+      iconPrimary: n[nn.iconPrimary],
+      iconSecondary: n[nn.iconSecondary],
 
-      border: n[700],
-      divider: n[700],
+      border: n[nn.border],
+      divider: n[nn.divider],
 
-      primary: brand.primary[400],
-      onPrimary: n[950],
-      primaryContainer: brand.primary[700],
-      onPrimaryContainer: n[50],
+      primary: brand.primary[br.primary],
+      onPrimary: n[nn.background],
+      primaryContainer: brand.primary[bc.primaryContainer],
+      onPrimaryContainer: n[nn.textPrimary],
 
-      secondary: brand.secondary[400],
-      onSecondary: n[950],
-      secondaryContainer: brand.secondary[700],
-      onSecondaryContainer: n[50],
+      secondary: brand.secondary[br.secondary],
+      onSecondary: n[nn.background],
+      secondaryContainer: brand.secondary[bc.secondaryContainer],
+      onSecondaryContainer: n[nn.textPrimary],
 
-      accent: brand.accent[400],
-      onAccent: n[950],
+      accent: brand.accent[br.accent],
+      onAccent: n[nn.background],
 
-      success: brand.success[400],
-      onSuccess: n[950],
-      successContainer: brand.success[700],
-      onSuccessContainer: n[50],
+      success: brand.success[br.success],
+      onSuccess: n[nn.background],
+      successContainer: brand.success[bc.successContainer],
+      onSuccessContainer: n[nn.textPrimary],
 
-      warning: brand.warning[400],
-      onWarning: n[950],
-      warningContainer: brand.warning[700],
-      onWarningContainer: n[50],
+      warning: brand.warning[br.warning],
+      onWarning: n[nn.background],
+      warningContainer: brand.warning[bc.warningContainer],
+      onWarningContainer: n[nn.textPrimary],
 
-      danger: brand.danger[400],
-      onDanger: n[950],
-      dangerContainer: brand.danger[700],
-      onDangerContainer: n[50],
+      danger: brand.danger[br.danger],
+      onDanger: n[nn.background],
+      dangerContainer: brand.danger[bc.dangerContainer],
+      onDangerContainer: n[nn.textPrimary],
 
-      info: brand.info[400],
-      onInfo: n[950],
-      infoContainer: brand.info[700],
-      onInfoContainer: n[50],
+      info: brand.info[br.info],
+      onInfo: n[nn.background],
+      infoContainer: brand.info[bc.infoContainer],
+      onInfoContainer: n[nn.textPrimary],
 
-      focusRing: brand.primary[400],
-      disabled: n[800],
-      onDisabled: n[500],
+      focusRing: brand.primary[br.primary],
+      disabled: n[nn.disabled],
+      onDisabled: n[nn.onDisabled],
 
-      scrim: n[950],
+      scrim: n[nn.scrim],
     );
   }
 

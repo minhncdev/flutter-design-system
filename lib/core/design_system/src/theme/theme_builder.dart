@@ -103,7 +103,33 @@ class AppThemeBuilder {
       elevation: cfg.elevation,
     );
 
-    return build(config: merged);
+    final light = _buildFor(
+      brightness: Brightness.light,
+      colors: AppColors.light(
+        palettes: merged.palettes,
+        brand: merged.brand,
+        mappingProfile: preset.mappingProfile,
+      ),
+      typography: merged.typography,
+      spacing: merged.spacing,
+      shape: merged.shape,
+      elevation: merged.elevation,
+    );
+
+    final dark = _buildFor(
+      brightness: Brightness.dark,
+      colors: AppColors.dark(
+        palettes: merged.palettes,
+        brand: merged.brand,
+        mappingProfile: preset.mappingProfile,
+      ),
+      typography: merged.typography,
+      spacing: merged.spacing,
+      shape: merged.shape,
+      elevation: merged.elevation,
+    );
+
+    return ThemeBundle(light: light, dark: dark);
   }
 
   /// Build ThemeData for a single brightness from a palette preset.
@@ -128,8 +154,16 @@ class AppThemeBuilder {
     return _buildFor(
       brightness: brightness,
       colors: brightness == Brightness.light
-          ? AppColors.light(palettes: merged.palettes, brand: merged.brand)
-          : AppColors.dark(palettes: merged.palettes, brand: merged.brand),
+          ? AppColors.light(
+              palettes: merged.palettes,
+              brand: merged.brand,
+              mappingProfile: preset.mappingProfile,
+            )
+          : AppColors.dark(
+              palettes: merged.palettes,
+              brand: merged.brand,
+              mappingProfile: preset.mappingProfile,
+            ),
       typography: merged.typography,
       spacing: merged.spacing,
       shape: merged.shape,

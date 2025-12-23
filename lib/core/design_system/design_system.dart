@@ -17,6 +17,7 @@ export 'src/tokens/color_palette.dart'; // For custom preset creation
 // Foundations
 // =======================
 export 'src/foundations/app_colors.dart';
+export 'src/foundations/semantic_mapping_profile.dart';
 export 'src/foundations/app_typography.dart';
 export 'src/foundations/app_spacing.dart';
 export 'src/foundations/app_shape.dart';

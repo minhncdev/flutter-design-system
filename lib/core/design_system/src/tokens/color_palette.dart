@@ -185,24 +185,12 @@ class PrimitivePalettes {
     c100: Color(0xFFDFEADF),
     c200: Color(0xFFC8D9C8),
     c300: Color(0xFFB1C7B2),
-
-    // From HTML (muted text on dark surfaces)
     c400: Color(0xFF92C9A4),
-
     c500: Color(0xFF6E9080),
-
-    // Keep a mid tone for icons/text fallback (doesn't need to be a literal)
     c600: Color(0xFF4F6A5A),
-
-    // From HTML (most-used border color in dark UI)
     c700: Color(0xFF2A4234),
-
-    // From HTML (surface color)
     c800: Color(0xFF233A2E),
-
-    // From HTML (card/input background)
     c900: Color(0xFF1A3325),
-
     c950: Color(0xFF102216),
   );
 

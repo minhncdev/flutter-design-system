@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Brightness;
 
 import '../foundations/app_colors.dart';
+import '../foundations/semantic_mapping_profile.dart';
 import '../tokens/color_palette.dart';
 import 'preset_preview.dart';
 
@@ -34,12 +35,23 @@ class PalettePreset {
   /// - preset mode: ép ThemeMode theo tone này, không phụ thuộc system brightness.
   final Brightness toneBrightness;
 
+  /// Semantic mapping profile (how brand shades map into semantic roles).
+  final AppSemanticMappingProfile mappingProfile;
+
   /// Preview is derived from tokens (palettes + brand + toneBrightness).
   /// This prevents mismatch between "preview" and actual theme mapping.
   PresetPreview get preview {
     final colors = toneBrightness == Brightness.light
-        ? AppColors.light(palettes: palettes, brand: brand)
-        : AppColors.dark(palettes: palettes, brand: brand);
+        ? AppColors.light(
+            palettes: palettes,
+            brand: brand,
+            mappingProfile: mappingProfile,
+          )
+        : AppColors.dark(
+            palettes: palettes,
+            brand: brand,
+            mappingProfile: mappingProfile,
+          );
 
     return PresetPreview(
       background: colors.background,
@@ -57,6 +69,7 @@ class PalettePreset {
     required this.palettes,
     required this.brand,
     required this.toneBrightness,
+    this.mappingProfile = AppSemanticMappingProfiles.material3,
     this.description,
   });
 }

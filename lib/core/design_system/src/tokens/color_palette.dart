@@ -173,22 +173,36 @@ class PrimitivePalettes {
     c950: Color(0xFF020308),
   );
 
-  /// Green-tinted neutral extracted from HTML mocks (overview/history/plan/debt).
-  /// - Light bg: #F6F8F6
-  /// - Dark bg:  #102216
-  /// - Dark surfaces: #1A2C22, #1C2E22, #23382C
+  // Green-tinted neutral extracted from HTML mocks (overview/history/plan/debt).
+  // - Light bg: #F6F8F6
+  // - Dark bg:  #102216
+  // - Common dark surfaces: #1A3325, #233A2E
+  // - Common borders: #2A4234
+  // - Dark muted text: #92C9A4
   static const ColorScale neutralForestScale = ColorScale(
     c0: Color(0xFFF6F8F6),
     c50: Color(0xFFEFF5EF),
     c100: Color(0xFFDFEADF),
     c200: Color(0xFFC8D9C8),
     c300: Color(0xFFB1C7B2),
-    c400: Color(0xFF92B4A1),
+
+    // From HTML (muted text on dark surfaces)
+    c400: Color(0xFF92C9A4),
+
     c500: Color(0xFF6E9080),
-    c600: Color(0xFF4F6A5A), // text muted in HTML
-    c700: Color(0xFF2D4638),
-    c800: Color(0xFF23382C),
-    c900: Color(0xFF1A2C22),
+
+    // Keep a mid tone for icons/text fallback (doesn't need to be a literal)
+    c600: Color(0xFF4F6A5A),
+
+    // From HTML (most-used border color in dark UI)
+    c700: Color(0xFF2A4234),
+
+    // From HTML (surface color)
+    c800: Color(0xFF233A2E),
+
+    // From HTML (card/input background)
+    c900: Color(0xFF1A3325),
+
     c950: Color(0xFF102216),
   );
 

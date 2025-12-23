@@ -30,6 +30,10 @@ class _DsGalleryComponentsPageState extends State<DsGalleryComponentsPage> {
   bool _checkboxValue = false;
   int _radioValue = 1;
 
+  // Expense HTML primitives demo state (UI-only).
+  _DemoRange _range = _DemoRange.month;
+  double _budgetUsed = 0.62;
+
   @override
   void dispose() {
     _nameCtrl.dispose();
@@ -91,6 +95,18 @@ class _DsGalleryComponentsPageState extends State<DsGalleryComponentsPage> {
         ),
         SizedBox(height: s.xl),
         DsGallerySection(
+          title: 'Expense UI primitives',
+          description:
+              'Patterns seen in the expense app HTML: icon container, badge dot, segmented filters, progress bars.',
+          child: _ExpensePrimitivesDemo(
+            range: _range,
+            budgetUsed: _budgetUsed,
+            onRangeChanged: (r) => setState(() => _range = r),
+            onBudgetUsedChanged: (v) => setState(() => _budgetUsed = v),
+          ),
+        ),
+        SizedBox(height: s.xl),
+        DsGallerySection(
           title: 'Toggles (Material + themed)',
           description:
               'These help validate your ThemeData component theming (Switch/Checkbox/Radio).',
@@ -117,6 +133,91 @@ class _DsGalleryComponentsPageState extends State<DsGalleryComponentsPage> {
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+enum _DemoRange { week, month, year }
+
+@immutable
+class _ExpensePrimitivesDemo extends StatelessWidget {
+  final _DemoRange range;
+  final double budgetUsed;
+  final ValueChanged<_DemoRange> onRangeChanged;
+  final ValueChanged<double> onBudgetUsedChanged;
+
+  const _ExpensePrimitivesDemo({
+    required this.range,
+    required this.budgetUsed,
+    required this.onRangeChanged,
+    required this.onBudgetUsedChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.dsSpacing.spacing;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Text('Badged icon', style: context.text.bodyMedium),
+            SizedBox(width: s.sm),
+            AppBadged(
+              child: AppIconButton(
+                icon: Icons.notifications_outlined,
+                semanticsLabel: 'Notifications',
+                variant: AppButtonVariant.ghost,
+                onPressed: () {},
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: s.lg),
+        Row(
+          children: <Widget>[
+            const AppIconContainer(
+              icon: Icons.settings_outlined,
+              tone: AppIconContainerTone.neutral,
+            ),
+            SizedBox(width: s.md),
+            const AppIconContainer(
+              icon: Icons.trending_up_outlined,
+              tone: AppIconContainerTone.success,
+            ),
+            SizedBox(width: s.md),
+            const AppIconContainer(
+              icon: Icons.warning_amber_outlined,
+              tone: AppIconContainerTone.warning,
+            ),
+            SizedBox(width: s.md),
+            const AppIconContainer(
+              icon: Icons.delete_outline,
+              tone: AppIconContainerTone.danger,
+            ),
+          ],
+        ),
+        SizedBox(height: s.lg),
+        AppSegmentedControl<_DemoRange>(
+          segments: const <AppSegment<_DemoRange>>[
+            AppSegment(value: _DemoRange.week, label: 'Week'),
+            AppSegment(value: _DemoRange.month, label: 'Month'),
+            AppSegment(value: _DemoRange.year, label: 'Year'),
+          ],
+          value: range,
+          onChanged: onRangeChanged,
+        ),
+        SizedBox(height: s.lg),
+        Text(
+          'Budget used: ${(budgetUsed * 100).round()}%',
+          style: context.text.bodyMedium,
+        ),
+        SizedBox(height: s.sm),
+        AppProgressBar(value: budgetUsed, tone: AppProgressTone.primary),
+        SizedBox(height: s.sm),
+        Slider(value: budgetUsed, onChanged: onBudgetUsedChanged),
       ],
     );
   }

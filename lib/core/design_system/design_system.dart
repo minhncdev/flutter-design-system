@@ -102,6 +102,7 @@ export 'src/components/navigation/navigation_item.dart';
 export 'src/components/inputs/app_text_field.dart';
 export 'src/components/inputs/app_dropdown.dart';
 export 'src/components/inputs/app_date_picker.dart';
+export 'src/components/inputs/app_segmented_control.dart';
 export 'src/components/inputs/input_style_resolver.dart';
 
 // Feedback
@@ -116,6 +117,9 @@ export 'src/components/data_display/app_chip.dart';
 export 'src/components/data_display/app_tag.dart';
 export 'src/components/data_display/app_divider.dart';
 export 'src/components/data_display/app_avatar.dart';
+export 'src/components/data_display/app_icon_container.dart';
+export 'src/components/data_display/app_badge_dot.dart';
+export 'src/components/data_display/app_progress_bar.dart';
 
 // Dialogs
 export 'src/components/dialogs/app_alert_dialog.dart';
